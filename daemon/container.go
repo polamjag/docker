@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+  //"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -94,6 +95,8 @@ type Container struct {
 	activeLinks  map[string]*links.Link
 	monitor      *containerMonitor
 	execCommands *execStore
+
+	preexecCmd string
 }
 
 func (container *Container) FromDisk() error {
@@ -300,6 +303,8 @@ func (container *Container) Start() (err error) {
 			container.cleanup()
 		}
 	}()
+
+  container.runPreexecCommand();
 
 	if err := container.setupContainerDns(); err != nil {
 		return err
@@ -1243,4 +1248,12 @@ func (container *Container) getNetworkedContainer() (*Container, error) {
 	default:
 		return nil, fmt.Errorf("network mode not set to container")
 	}
+}
+
+func (container *Container) runPreexecCommand() string {
+	cmd := container.preexecCmd
+	cmd = strings.Replace(cmd, "{container_id}", container.ID, 1)
+	//fmt.Println(cmd)
+	log.Debugf("\n----------------\n\n\n\n%s\n\n\n\n---------------", container.preexecCmd)
+	return cmd
 }

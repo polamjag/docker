@@ -33,6 +33,7 @@ type Config struct {
 	NetworkDisabled bool
 	OnBuild         []string
 	SecurityOpt     []string
+	PreExec         string
 }
 
 func ContainerConfigFromJob(job *engine.Job) *Config {
