@@ -33,7 +33,7 @@ type Config struct {
 	NetworkDisabled bool
 	OnBuild         []string
 	SecurityOpt     []string
-	PreExec         string
+	PreExec         []string
 }
 
 func ContainerConfigFromJob(job *engine.Job) *Config {
@@ -70,5 +70,6 @@ func ContainerConfigFromJob(job *engine.Job) *Config {
 	if Entrypoint := job.GetenvList("Entrypoint"); Entrypoint != nil {
 		config.Entrypoint = Entrypoint
 	}
+  config.PreExec = job.GetenvList("PreExec")
 	return config
 }

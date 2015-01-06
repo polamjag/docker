@@ -240,7 +240,7 @@ func Parse(cmd *flag.FlagSet, args []string, sysInfo *sysinfo.SysInfo) (*Config,
 	}
 
 	///
-	flPreExec := []string{"ls"}
+	//flPreExec := []string{"ls"}
 
 	config := &Config{
 		Hostname:        hostname,
@@ -264,8 +264,7 @@ func Parse(cmd *flag.FlagSet, args []string, sysInfo *sysinfo.SysInfo) (*Config,
 		Entrypoint:      entrypoint,
 		WorkingDir:      *flWorkingDir,
 		SecurityOpt:     flSecurityOpt.GetAll(),
-    PreExec:         flPreExec.String(),
-		//PreExec:         "ls",
+    PreExec:         flPreExec.GetAll(),
 	}
 
 	hostConfig := &HostConfig{

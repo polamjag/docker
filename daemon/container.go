@@ -8,7 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-  //"os/exec"
+  "os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -95,8 +95,6 @@ type Container struct {
 	activeLinks  map[string]*links.Link
 	monitor      *containerMonitor
 	execCommands *execStore
-
-	preexecCmd string
 }
 
 func (container *Container) FromDisk() error {
@@ -1250,10 +1248,19 @@ func (container *Container) getNetworkedContainer() (*Container, error) {
 	}
 }
 
-func (container *Container) runPreexecCommand() string {
-	cmd := container.preexecCmd
-	cmd = strings.Replace(cmd, "{container_id}", container.ID, 1)
+func (container *Container) runPreexecCommand() {
+	//cmd = strings.Replace(cmd, "{container_id}", container.ID, 1)
 	//fmt.Println(cmd)
-	log.Debugf("\n----------------\n\n\n\n%s\n\n\n\n---------------", container.preexecCmd)
-	return cmd
+	log.Debugf("\n----------------\n\n\n\n\n\n\n\n---------------")
+  for _, cmdstr := range container.Config.PreExec {
+    cmd_s := strings.Fields(cmdstr)
+    out, err := exec.Command(cmd_s[0], cmd_s[1:]...).Output()
+    if err != nil {
+      log.Debugf("%v", err)
+    }
+    log.Debugf("%s\n", out)
+  }
+	log.Debugf("\n----------------\n\n\n\n\n\n\n\n---------------")
+  log.Debugf("%#v, %d", container.Config.PreExec, len(container.Config.PreExec));
+	//return cmd
 }
